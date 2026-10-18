@@ -43,7 +43,6 @@ npm run dev
 
 Abre <http://localhost:4321>.
 
-> `astro` no está instalado de forma global, así que úsalo siempre a través de npm (`npm run dev`) o de `npx astro …`.
 
 ## Editar a mano
 
