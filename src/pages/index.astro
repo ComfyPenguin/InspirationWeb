@@ -1,0 +1,444 @@
+---
+import { loadDb, type DesignType, type DesignItem } from '../lib/db';
+
+// Se lee en cada petición para ver al momento lo que añade /api/ingest.
+export const prerender = false;
+
+const db = await loadDb();
+const norm = (s: string) => s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+const itemsOf = (t: DesignType) => db.items.filter((i) => i.type === t.id);
+const searchText = (t: DesignType, i: DesignItem) => norm([i.title, t.name, ...i.keywords, ...t.keywords].join(' '));
+const kwText = (t: DesignType, i: DesignItem) => norm([...new Set([...t.keywords, ...i.keywords])].join('|'));
+const total = db.items.length;
+const pad = (n: number) => String(n).padStart(2, '0');
+// Numeración global en el orden en que se muestran (agrupados por estilo).
+const ordered = db.types.flatMap(itemsOf);
+const numberOf = (i: DesignItem) => pad(ordered.indexOf(i) + 1);
+const VISIBLE_TAGS = 3;
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Inspiración de diseño</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="top">
+        <h1>Inspiración</h1>
+        <p class="mono muted">{total} referencias · {db.types.length} estilos</p>
+        <details class="add">
+          <summary class="chip">+ Añadir diseño</summary>
+          <div class="add-body">
+            <label class="drop" id="drop">
+              <input type="file" id="file" accept="image/jpeg,image/png,image/webp,image/gif" />
+              <span><strong>Suelta una imagen</strong> o haz clic para elegirla<br /><small class="mono muted">JPG · PNG · WEBP · GIF · máx. 5 MB</small></span>
+            </label>
+            <form id="url-form" class="url-form">
+              <input type="url" name="url" placeholder="https://… (imagen o web)" required aria-label="URL de imagen o web" />
+              <button type="submit" class="chip chip-solid">Analizar</button>
+            </form>
+            <p id="add-status" class="mono muted small" role="status"></p>
+          </div>
+        </details>
+      </header>
+
+      <nav class="filters" aria-label="Filtros">
+        <div class="chips" id="type-chips">
+          <button type="button" class="chip" data-type="" aria-pressed="true">Todos <span class="count">{total}</span></button>
+          {db.types.map((t) => (
+            <button type="button" class="chip" data-type={t.id} aria-pressed="false">
+              {t.name} <span class="count">{itemsOf(t).length}</span>
+            </button>
+          ))}
+        </div>
+        <div class="filter-row">
+          <input type="search" id="q" class="search" placeholder="Buscar por título o keyword…" aria-label="Buscar" />
+          <button type="button" class="chip chip-solid" id="kw-chip" hidden></button>
+          <span class="mono muted small" id="result-count"></span>
+        </div>
+      </nav>
+
+      <main>
+        <ul class="grid">
+          {db.types.map((t) => (
+            <>
+              <li class="group" data-section={t.id} id={t.id}>
+                <div class="group-main">
+                  <h2>{t.name} <span class="count">{itemsOf(t).length}</span></h2>
+                  <div class="group-text">
+                    <div><p class="mono label">Qué es</p><p>{t.what}</p></div>
+                    <div><p class="mono label">Qué significa</p><p>{t.meaning}</p></div>
+                  </div>
+                </div>
+                <dl class="vocab">
+                  {t.vocabulary.map((v) => (<div><dt class="mono">{v.term}</dt><dd>{v.def}</dd></div>))}
+                </dl>
+                <div class="group-foot">
+                  <ul class="tags">{t.keywords.map((k) => <li class="tag">{k}</li>)}</ul>
+                  <div class="actions">
+                    <button type="button" class="chip chip-solid" data-copy-type="prompt" data-type-id={t.id}>Copiar prompt</button>
+                    <button type="button" class="chip" data-copy-type="brief" data-type-id={t.id}>Copiar brief</button>
+                  </div>
+                </div>
+              </li>
+              {itemsOf(t).map((i) => {
+                const tags = [...new Set([...i.keywords.slice(2), ...t.keywords])];
+                return (
+                  <li class="card" data-item={i.id} data-type={t.id} data-search={searchText(t, i)} data-kw={kwText(t, i)}>
+                    <button type="button" class="card-media" aria-label={`Ver ${i.title}`}>
+                      <img src={i.src} alt="" loading="lazy" />
+                    </button>
+                    <div class="card-body">
+                      <div class="card-head">
+                        <h3>{i.title}</h3>
+                        <span class="mono muted sub">{i.keywords.slice(0, 2).join(' x ')}</span>
+                      </div>
+                      <ul class="tags">
+                        {tags.slice(0, VISIBLE_TAGS).map((k) => <li class="tag">{k}</li>)}
+                        {tags.length > VISIBLE_TAGS && <li class="mono muted more">+{tags.length - VISIBLE_TAGS}</li>}
+                      </ul>
+                      <div class="card-foot mono">
+                        <span class="accent">◆ {t.name}</span>
+                        <span class="muted">{numberOf(i)} / {pad(total)}</span>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </>
+          ))}
+        </ul>
+        <p id="empty" class="empty mono muted" hidden>Sin resultados para estos filtros.</p>
+      </main>
+    </div>
+
+    <dialog id="modal" aria-labelledby="m-title">
+      <div class="m-head">
+        <div>
+          <p class="mono accent" id="m-type"></p>
+          <h2 id="m-title"></h2>
+        </div>
+        <button type="button" class="chip" id="m-close" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="m-body">
+        <div class="m-images" id="m-images"></div>
+        <div class="m-side">
+          <p class="mono label">Keywords</p>
+          <p class="small muted">Haz clic en una para filtrar la galería.</p>
+          <ul class="tags" id="m-tags"></ul>
+          <div class="actions">
+            <button type="button" class="chip chip-solid" id="m-prompt">Copiar prompt</button>
+            <button type="button" class="chip" id="m-brief">Copiar brief</button>
+          </div>
+          <a id="m-source" class="mono small" target="_blank" rel="noopener noreferrer" hidden>Ver origen ↗</a>
+        </div>
+      </div>
+    </dialog>
+
+    <script type="application/json" id="db" set:html={JSON.stringify(db)} />
+
+    <script>
+      type Type = { id: string; name: string; keywords: string[]; prompt: string; brief: string };
+      type Item = { id: string; type: string; src: string; shots?: string[]; title: string; keywords: string[]; sourceUrl: string | null };
+      const db: { types: Type[]; items: Item[] } = JSON.parse(document.getElementById('db')!.textContent!);
+      const typeById = new Map(db.types.map((t) => [t.id, t]));
+      const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+      const norm = (s: string) => s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+
+      const itemKeywords = (t: Type, i: Item) => [...new Set([...i.keywords, ...t.keywords])];
+      const itemPrompt = (t: Type, i: Item) => `${t.prompt}, ${i.keywords.join(', ')}`;
+      const itemBrief = (t: Type, i: Item) => `${t.brief}\n\nReferencia concreta: ${i.title}. Rasgos: ${i.keywords.join(', ')}.`;
+
+      async function copy(btn: HTMLButtonElement, text: string) {
+        const label = btn.textContent;
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.textContent = 'Copiado';
+        } catch {
+          btn.textContent = 'No se pudo copiar';
+        }
+        setTimeout(() => (btn.textContent = label), 1500);
+      }
+
+      document.querySelectorAll<HTMLButtonElement>('[data-copy-type]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const t = typeById.get(btn.dataset.typeId!)!;
+          copy(btn, btn.dataset.copyType === 'prompt' ? t.prompt : t.brief);
+        });
+      });
+
+      // ---- Filtros (estado en la URL) ----
+      const params = new URLSearchParams(location.search);
+      const state = { q: params.get('q') ?? '', type: params.get('type') ?? '', kw: params.get('kw') ?? '' };
+      const qInput = $<HTMLInputElement>('q');
+      const kwChip = $<HTMLButtonElement>('kw-chip');
+      qInput.value = state.q;
+
+      function applyFilters() {
+        const q = norm(state.q.trim());
+        const kw = norm(state.kw);
+        let shown = 0;
+        document.querySelectorAll<HTMLElement>('.card').forEach((card) => {
+          const ok =
+            (!state.type || state.type === card.dataset.type) &&
+            (!q || card.dataset.search!.includes(q)) &&
+            (!kw || card.dataset.kw!.split('|').includes(kw));
+          card.hidden = !ok;
+          if (ok) shown++;
+        });
+        document.querySelectorAll<HTMLElement>('[data-section]').forEach((g) => {
+          g.hidden = !document.querySelector(`.card[data-type="${g.dataset.section}"]:not([hidden])`);
+        });
+        document.querySelectorAll<HTMLButtonElement>('#type-chips .chip').forEach((c) => {
+          c.setAttribute('aria-pressed', String(c.dataset.type === state.type));
+        });
+        kwChip.hidden = !state.kw;
+        kwChip.textContent = `${state.kw} ✕`;
+        kwChip.setAttribute('aria-label', `Quitar filtro de keyword ${state.kw}`);
+        $('result-count').textContent = `${shown} de ${db.items.length}`;
+        $('empty').hidden = shown > 0;
+
+        const p = new URLSearchParams();
+        if (state.q) p.set('q', state.q);
+        if (state.type) p.set('type', state.type);
+        if (state.kw) p.set('kw', state.kw);
+        history.replaceState(null, '', p.size ? `?${p}` : location.pathname);
+      }
+
+      qInput.addEventListener('input', () => { state.q = qInput.value; applyFilters(); });
+      document.querySelectorAll<HTMLButtonElement>('#type-chips .chip').forEach((c) => {
+        c.addEventListener('click', () => { state.type = c.dataset.type!; applyFilters(); });
+      });
+      kwChip.addEventListener('click', () => { state.kw = ''; applyFilters(); });
+      applyFilters();
+
+      // ---- Modal ----
+      const modal = $<HTMLDialogElement>('modal');
+      let current: { t: Type; i: Item } | null = null;
+
+      function openItem(i: Item) {
+        const t = typeById.get(i.type)!;
+        current = { t, i };
+        $('m-title').textContent = i.title;
+        $('m-type').textContent = `◆ ${t.name}`;
+        $('m-images').replaceChildren(...(i.shots ?? [i.src]).map((src) => Object.assign(new Image(), { src, alt: i.title })));
+        $('m-tags').replaceChildren(...itemKeywords(t, i).map((k) => {
+          const li = document.createElement('li');
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'tag tag-btn';
+          b.textContent = k;
+          b.addEventListener('click', () => { state.kw = k; modal.close(); applyFilters(); });
+          li.append(b);
+          return li;
+        }));
+        const src = $<HTMLAnchorElement>('m-source');
+        src.hidden = !i.sourceUrl;
+        if (i.sourceUrl) src.href = i.sourceUrl;
+        modal.showModal();
+      }
+
+      document.querySelectorAll<HTMLElement>('.card').forEach((card) => {
+        card.querySelector('.card-media')!.addEventListener('click', () => openItem(db.items.find((i) => i.id === card.dataset.item)!));
+      });
+      $('m-close').addEventListener('click', () => modal.close());
+      modal.addEventListener('click', (e) => { if (e.target === modal) modal.close(); });
+      $<HTMLButtonElement>('m-prompt').addEventListener('click', (e) => current && copy(e.currentTarget as HTMLButtonElement, itemPrompt(current.t, current.i)));
+      $<HTMLButtonElement>('m-brief').addEventListener('click', (e) => current && copy(e.currentTarget as HTMLButtonElement, itemBrief(current.t, current.i)));
+
+      // ---- Añadir diseño ----
+      const addPanel = document.querySelector<HTMLDetailsElement>('.add')!;
+      document.addEventListener('click', (e) => {
+        if (addPanel.open && !addPanel.contains(e.target as Node)) addPanel.open = false;
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && addPanel.open) {
+          addPanel.open = false;
+          addPanel.querySelector('summary')!.focus();
+        }
+      });
+      const status = $('add-status');
+      const drop = $('drop');
+      const fileInput = $<HTMLInputElement>('file');
+      const urlForm = $<HTMLFormElement>('url-form');
+      let busy = false;
+
+      async function ingest(body: BodyInit, headers?: HeadersInit) {
+        if (busy) return;
+        busy = true;
+        drop.classList.add('busy');
+        status.textContent = 'Analizando con Claude… (puede tardar un poco)';
+        try {
+          const res = await fetch('/api/ingest', { method: 'POST', body, headers });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error ?? `Error ${res.status}`);
+          status.textContent = `Añadido: ${data.title}. Recargando…`;
+          location.reload();
+        } catch (e) {
+          status.textContent = (e as Error).message;
+          busy = false;
+          drop.classList.remove('busy');
+        }
+      }
+
+      function sendFile(f: File | undefined) {
+        if (!f) return;
+        const fd = new FormData();
+        fd.append('file', f);
+        ingest(fd);
+      }
+
+      fileInput.addEventListener('change', () => sendFile(fileInput.files?.[0]));
+      drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
+      drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+      drop.addEventListener('drop', (e) => {
+        e.preventDefault();
+        drop.classList.remove('over');
+        sendFile(e.dataTransfer?.files[0]);
+      });
+      urlForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const url = new FormData(urlForm).get('url');
+        ingest(JSON.stringify({ url }), { 'content-type': 'application/json' });
+      });
+    </script>
+
+    <style is:global>
+      :root {
+        --bg: #f4efe9;
+        --surface: #faf7f2;
+        --tag: #ebe5dc;
+        --ink: #1c1a17;
+        --muted: #6f6a62;
+        --accent: #b8593a;
+        --line: 1.5px solid var(--ink);
+        --mono: 'IBM Plex Mono', ui-monospace, monospace;
+        --serif: 'Newsreader', Georgia, serif;
+        color-scheme: light;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.5 var(--serif); }
+      h1, h2, h3, p, dl, dd, ul { margin: 0; }
+      ul { list-style: none; padding: 0; }
+      button, input { font: inherit; color: inherit; }
+      .mono { font-family: var(--mono); }
+      .muted { color: var(--muted); }
+      .accent { color: var(--accent); }
+      .small { font-size: 0.8rem; }
+      .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 6px; }
+      :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      [hidden] { display: none !important; }
+
+      .page { max-width: 1440px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 56px) 96px; }
+
+      .top {
+        display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 24px;
+        border-top: 3px solid var(--ink); margin-top: 32px; padding-top: 28px;
+      }
+      .top h1 { font: 400 clamp(2.4rem, 1.6rem + 3vw, 4rem)/1 var(--serif); letter-spacing: -0.02em; }
+      .top > p { font-size: 0.85rem; }
+      .add { margin-left: auto; position: relative; }
+      .add summary { list-style: none; }
+      .add summary::-webkit-details-marker { display: none; }
+      .add-body {
+        position: absolute; right: 0; top: calc(100% + 10px); z-index: 10;
+        width: min(440px, calc(100vw - 32px)); background: var(--surface); border: var(--line);
+        padding: 16px; display: grid; gap: 12px;
+      }
+      .drop {
+        display: grid; place-items: center; text-align: center; min-height: 130px; padding: 16px;
+        border: 1.5px dashed var(--ink); cursor: pointer; background: var(--bg);
+      }
+      .drop input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+      .drop.over, .drop:focus-within { border-color: var(--accent); background: var(--tag); }
+      .drop.busy { opacity: 0.5; pointer-events: none; }
+      .url-form { display: flex; gap: 8px; }
+
+      .chip {
+        display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 18px;
+        font: 400 0.82rem/1 var(--mono); text-transform: uppercase; letter-spacing: 0.14em;
+        background: transparent; border: var(--line); border-radius: 0; cursor: pointer; white-space: nowrap;
+        transition: background-color .15s, color .15s;
+      }
+      .chip:hover { background: var(--tag); }
+      .chip[aria-pressed='true'], .chip-solid { background: var(--ink); color: var(--bg); }
+      .chip[aria-pressed='true']:hover, .chip-solid:hover { background: #3a362f; }
+      .count { color: var(--accent); }
+      .chip[aria-pressed='true'] .count, .chip-solid .count { color: #f0a080; }
+
+      .filters { margin: 40px 0 36px; display: grid; gap: 16px; }
+      .chips { display: flex; flex-wrap: wrap; gap: 12px; }
+      .filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+      .search, .url-form input {
+        flex: 1 1 260px; max-width: 440px; min-height: 44px; padding: 0 14px;
+        font: 400 0.9rem var(--mono); background: var(--surface); border: var(--line); border-radius: 0;
+      }
+      .url-form input { max-width: none; }
+
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); gap: 28px; }
+
+      .group {
+        grid-column: 1 / -1; border: var(--line); background: var(--surface);
+        display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px 40px; padding: clamp(20px, 3vw, 36px);
+        scroll-margin-top: 24px;
+      }
+      .group:not(:first-child) { margin-top: 36px; }
+      .group h2 { font: 400 clamp(2rem, 1.4rem + 2vw, 3rem)/1.05 var(--serif); letter-spacing: -0.015em; margin-bottom: 20px; }
+      .group h2 .count { font: 400 1rem var(--mono); vertical-align: super; }
+      .group-text { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+      .vocab { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; align-content: start; }
+      .vocab dt { font-size: 0.82rem; font-weight: 500; }
+      .vocab dd { font-size: 0.95rem; color: var(--muted); line-height: 1.4; }
+      .group-foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; }
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+      .tags { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+      .tag { font: 400 0.85rem/1 var(--mono); background: var(--tag); padding: 9px 12px; border: 1px solid #ddd5c9; }
+      .more { font-size: 0.85rem; }
+
+      .card { border: var(--line); background: var(--surface); display: flex; flex-direction: column; }
+      .card-media { display: block; padding: 0; border: 0; border-bottom: var(--line); cursor: zoom-in; overflow: hidden; background: var(--tag); }
+      .card-media img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; transition: transform .4s ease; }
+      .card-media:hover img { transform: scale(1.025); }
+      .card-body { padding: 22px 24px 20px; display: grid; gap: 18px; flex: 1; align-content: start; }
+      .card-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 20px; }
+      .card-head h3 { font: 400 1.65rem/1.15 var(--serif); letter-spacing: -0.01em; flex: 1 1 260px; }
+      .sub { font-size: 0.85rem; }
+      .card-foot { display: flex; justify-content: space-between; gap: 16px; font-size: 0.85rem; letter-spacing: 0.06em; margin-top: auto; }
+
+      .empty { text-align: center; padding: 64px 0; }
+
+      dialog {
+        width: min(1200px, calc(100vw - 32px)); max-height: calc(100vh - 32px); padding: 0;
+        background: var(--surface); color: var(--ink); border: var(--line); border-radius: 0;
+      }
+      dialog::backdrop { background: rgb(28 26 23 / 0.55); }
+      .m-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 20px 24px; border-bottom: var(--line); }
+      .m-head h2 { font: 400 1.9rem/1.1 var(--serif); margin-top: 4px; }
+      #m-type { font-size: 0.85rem; letter-spacing: 0.06em; }
+      .m-body { display: grid; grid-template-columns: 1fr 320px; gap: 24px; padding: 24px; }
+      .m-images { display: grid; gap: 12px; }
+      .m-images img { width: 100%; display: block; border: var(--line); }
+      .m-side { position: sticky; top: 0; align-self: start; display: grid; gap: 12px; }
+      .tag-btn { cursor: pointer; }
+      .tag-btn:hover { background: var(--ink); color: var(--bg); }
+      #m-source { color: var(--ink); }
+
+      @media (max-width: 900px) {
+        .group { grid-template-columns: 1fr; }
+        .group-text, .vocab { grid-template-columns: 1fr; }
+        .m-body { grid-template-columns: 1fr; }
+        .m-side { position: static; }
+        .add { margin-left: 0; }
+        .add-body { left: 0; right: auto; }
+      }
+      @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+    </style>
+  </body>
+</html>

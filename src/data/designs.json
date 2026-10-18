@@ -1,0 +1,332 @@
+{
+  "types": [
+    {
+      "id": "bit_map",
+      "name": "Bitmap / Dithering",
+      "what": "Interfaces limpias y minimalistas que combinan UI moderna (tipografía sans, botones redondeados, mucho blanco) con imágenes convertidas a 1 bit mediante tramado (dithering), semitono o caracteres ASCII.",
+      "meaning": "Mezcla nostalgia digital (Mac clásico, impresoras matriciales, pantallas de baja resolución) con precisión contemporánea. Transmite tecnología, artesanía digital y un toque experimental, sin perder seriedad: muy usado en productos de IA, dev tools y startups tech.",
+      "vocabulary": [
+        {
+          "term": "Dithering",
+          "def": "Técnica que simula tonos intermedios alternando píxeles blancos y negros según un patrón."
+        },
+        {
+          "term": "1-bit",
+          "def": "Imagen con solo dos valores de color por píxel: blanco o negro."
+        },
+        {
+          "term": "Halftone / semitono",
+          "def": "Trama de puntos de tamaño variable que reproduce grises, heredada de la imprenta."
+        },
+        {
+          "term": "Floyd–Steinberg / Bayer",
+          "def": "Algoritmos de tramado: difusión de error (orgánico) o matriz ordenada (patrón regular)."
+        },
+        {
+          "term": "ASCII art",
+          "def": "Imagen construida con caracteres tipográficos en lugar de píxeles."
+        },
+        {
+          "term": "Split screen",
+          "def": "Layout dividido en dos mitades: formulario o contenido a un lado e imagen al otro."
+        },
+        {
+          "term": "Monocromo",
+          "def": "Paleta reducida a un solo tono (normalmente negro sobre blanco)."
+        }
+      ],
+      "keywords": [
+        "dithering",
+        "1-bit",
+        "bitmap",
+        "halftone",
+        "monochrome",
+        "pixel texture",
+        "minimal UI",
+        "black and white",
+        "retro-digital"
+      ],
+      "prompt": "Minimal modern web UI, clean white panel with crisp black sans-serif typography and pill-shaped buttons, paired with a 1-bit dithered black and white image, visible pixel dithering pattern, halftone texture, monochrome, high contrast, retro-digital aesthetic, Dribbble shot, flat presentation on a light grey background",
+      "brief": "Diseñar una interfaz minimalista en blanco y negro donde la tipografía y los componentes son limpios y contemporáneos, y la imagen protagonista se trata con dithering de 1 bit (tramado de píxeles o semitono). Paleta: negro, blanco y grises neutros. Tipografía sans-serif geométrica o grotesca, con monoespaciada opcional en textos secundarios. Composición con mucho aire, a menudo split screen. Tono: tecnológico, preciso y con un guiño retro-digital."
+    },
+    {
+      "id": "dim_mono",
+      "name": "Editorial monocromo",
+      "what": "Diseño editorial sobre fondos claros con ilustración monocroma de alto contraste (siluetas, grabado, líneas finas) y tipografía grande y ligera, combinando sans fina con serif itálica. Algún acento de color puntual.",
+      "meaning": "Evoca introspección, calma y profundidad. La reducción cromática y la ilustración tipo grabado dan un aire místico, espiritual o de autoconocimiento, con sofisticación de revista impresa.",
+      "vocabulary": [
+        {
+          "term": "Layout editorial",
+          "def": "Composición inspirada en revistas: jerarquía tipográfica fuerte, columnas y aire."
+        },
+        {
+          "term": "Tipografía mixta",
+          "def": "Combinación de sans-serif ligera con serif itálica para enfatizar palabras."
+        },
+        {
+          "term": "Silueta",
+          "def": "Forma rellena de un solo color, sin detalle interno."
+        },
+        {
+          "term": "Grabado / line art",
+          "def": "Ilustración de líneas finas y puntos, que recuerda a la xilografía o los mapas antiguos."
+        },
+        {
+          "term": "Acento cromático",
+          "def": "Un único color vivo y pequeño que guía la mirada en una paleta neutra."
+        },
+        {
+          "term": "Off-white",
+          "def": "Blanco roto o gris muy claro como fondo, más cálido que el blanco puro."
+        }
+      ],
+      "keywords": [
+        "editorial",
+        "monochrome illustration",
+        "silhouette",
+        "line art",
+        "thin sans-serif",
+        "italic serif",
+        "off-white",
+        "mystic",
+        "accent color"
+      ],
+      "prompt": "Editorial landing page design, off-white background, large thin sans-serif headline mixed with elegant italic serif words, high-contrast monochrome illustration of mountain silhouette in charcoal and white, fine line-art radial diagram with an eye, small orange star accent, generous whitespace, mystical minimal aesthetic, full page web mockup",
+      "brief": "Diseñar una página con estética editorial: fondo off-white, titulares grandes en sans ligera combinada con serif itálica subrayada, e ilustraciones monocromas de alto contraste (siluetas, grabado, line art). Un único color de acento pequeño. Mucho espacio en blanco y ritmo de revista. Tono: introspectivo, místico y sofisticado."
+    },
+    {
+      "id": "plain",
+      "name": "Flat / Paisaje plano",
+      "what": "Landing pages con ilustración vectorial plana de paisajes (montañas, bosques, cielos) construida con capas superpuestas y degradados suaves, con el hero centrado sobre la ilustración.",
+      "meaning": "Comunica aventura, naturaleza, calma y accesibilidad. Es un estilo amable y muy reconocible, popular en plantillas de stock: transmite claridad y emoción sin complejidad.",
+      "vocabulary": [
+        {
+          "term": "Flat design",
+          "def": "Ilustración sin texturas ni volumen realista, basada en formas y colores planos."
+        },
+        {
+          "term": "Capas de profundidad",
+          "def": "Planos superpuestos que se aclaran con la distancia (perspectiva atmosférica)."
+        },
+        {
+          "term": "Degradado",
+          "def": "Transición suave entre colores, típica en cielos de amanecer o atardecer."
+        },
+        {
+          "term": "Hero",
+          "def": "Sección principal de la landing con titular, subtítulo y CTA."
+        },
+        {
+          "term": "CTA",
+          "def": "Call to action: botón que invita a la acción principal."
+        },
+        {
+          "term": "Paleta pastel / atardecer",
+          "def": "Rosas, lilas, turquesas y naranjas suaves que crean atmósfera."
+        }
+      ],
+      "keywords": [
+        "flat illustration",
+        "vector landscape",
+        "mountains",
+        "gradient sky",
+        "layered depth",
+        "landing page",
+        "hero",
+        "pastel palette",
+        "sunset"
+      ],
+      "prompt": "Landing page web template, flat vector illustration of layered mountains and pine forest, smooth gradient sky at sunset, atmospheric depth with lighter distant layers, centered hero with big WELCOME headline and a small CTA button, minimal top navigation, pastel palette, clean modern UI mockup, presented on a matching soft background",
+      "brief": "Diseñar una landing con ilustración vectorial plana de paisaje (montañas en capas, bosque, cielo degradado) ocupando el hero. Titular grande y claro, subtítulo corto y un CTA destacado. Navegación mínima arriba. Paleta pastel o de atardecer coherente en toda la página. Tono: aventurero, calmado y accesible."
+    },
+    {
+      "id": "dark_halftone_dossier",
+      "name": "Dosier oscuro con semitono",
+      "what": "Webs sobre fondo negro con estética de expediente técnico: esculturas clásicas y grabados convertidos a semitono o dithering en crema sobre negro, titulares en serif elegante, texto en grotesca monoespaciada y detalles de ficha (códigos de barras, marcas de esquina, numeración, kanji).",
+      "meaning": "Mezcla el clasicismo (estatuas, mármol) con la cultura técnica y el Japón retrofuturista, para dar a un producto de software un tono solemne, artesanal y de culto. El tramado da textura táctil de impresión a una interfaz digital.",
+      "vocabulary": [
+        {
+          "term": "Semitono / dithering",
+          "def": "Imagen reducida a puntos o patrones de un solo color que simulan los tonos de gris."
+        },
+        {
+          "term": "Dosier / ficha técnica",
+          "def": "Maquetación con etiquetas pequeñas en mayúsculas, numeración tipo 01 // y tablas de datos clave-valor."
+        },
+        {
+          "term": "Marcas de esquina",
+          "def": "Pequeños corchetes en las esquinas de un marco, como un visor o una ficha."
+        },
+        {
+          "term": "Código de barras decorativo",
+          "def": "Elemento gráfico que refuerza el aire de etiqueta industrial."
+        },
+        {
+          "term": "Kanji gigante tenue",
+          "def": "Caracteres japoneses enormes en gris casi negro que actúan como textura de fondo."
+        },
+        {
+          "term": "Paleta crema sobre negro",
+          "def": "Texto e imágenes en beige cálido sobre negro, con un único acento naranja rojizo."
+        }
+      ],
+      "keywords": [
+        "dark mode",
+        "halftone",
+        "classical statue",
+        "Japanese kanji",
+        "dossier",
+        "barcode",
+        "monospace",
+        "serif headline",
+        "cream on black",
+        "corner brackets"
+      ],
+      "prompt": "Dark website hero in a technical dossier style: pure black background with fine film grain, a classical marble bust of a bearded man with a tattooed shoulder rendered as coarse halftone dither dots in warm cream beige, a thin circle outline behind it, elegant high-contrast serif title 'Ryoku' at top left, small uppercase letterspaced monospace labels, key-value spec table with thin divider lines, stat boxes with big numbers, a countdown with one orange-red accent, barcode graphic, corner bracket marks, giant faint Japanese kanji in the background, muted cream and black palette, editorial and cultish mood",
+      "brief": "Usar fondo negro y una única tinta crema cálida, con un solo acento naranja rojizo. Convertir las imágenes (estatuas, figuras clásicas) a semitono grueso de un solo color y enmarcarlas con marcas de esquina. Titulares en serif con contraste, cuerpo en grotesca geométrica y etiquetas diminutas en mayúsculas con tracking amplio. Añadir detalles de ficha: numeración 01 //, códigos de barras, tablas de datos finas y kanji gigantes casi invisibles de fondo. Mantener mucho espacio negro y líneas finas de 1px."
+    }
+  ],
+  "items": [
+    {
+      "id": "287be348",
+      "type": "bit_map",
+      "src": "/designs/bit_map/287be348abd2925f11779f50a49fc729.jpg",
+      "title": "Login split con paisaje en dithering",
+      "keywords": [
+        "login",
+        "split screen",
+        "landscape",
+        "social sign-in"
+      ],
+      "sourceUrl": null
+    },
+    {
+      "id": "2f99c6b2",
+      "type": "bit_map",
+      "src": "/designs/bit_map/2f99c6b26a9cd5a378688ea670a384d6.jpg",
+      "title": "Hero IA con manos en ASCII",
+      "keywords": [
+        "hero",
+        "ASCII art",
+        "hands",
+        "AI startup",
+        "centered"
+      ],
+      "sourceUrl": null
+    },
+    {
+      "id": "3e993a02",
+      "type": "bit_map",
+      "src": "/designs/bit_map/3e993a02cfb3af57838958ba2d13daa9.jpg",
+      "title": "Sign in con trama de rombos",
+      "keywords": [
+        "login",
+        "halftone diamonds",
+        "monospace",
+        "split screen"
+      ],
+      "sourceUrl": null
+    },
+    {
+      "id": "37549726",
+      "type": "dim_mono",
+      "src": "/designs/dim_mono/37549726a07f2299b610effe6543509a.jpg",
+      "title": "Test de autoconocimiento editorial",
+      "keywords": [
+        "mountain silhouette",
+        "eye",
+        "radial diagram",
+        "personality test",
+        "breadcrumb"
+      ],
+      "sourceUrl": null
+    },
+    {
+      "id": "2614506",
+      "type": "plain",
+      "src": "/designs/plain/2614506.jpg",
+      "title": "Welcome coral con montañas",
+      "keywords": [
+        "coral",
+        "pink",
+        "purple mountains",
+        "centered hero"
+      ],
+      "sourceUrl": null
+    },
+    {
+      "id": "2770492",
+      "type": "plain",
+      "src": "/designs/plain/2770492.jpg",
+      "title": "Montañas nevadas pastel",
+      "keywords": [
+        "snowy mountains",
+        "pine trees",
+        "condensed type",
+        "left-aligned hero"
+      ],
+      "sourceUrl": null
+    },
+    {
+      "id": "2834474",
+      "type": "plain",
+      "src": "/designs/plain/2834474.jpg",
+      "title": "Atardecer violeta y naranja",
+      "keywords": [
+        "sunset",
+        "orange peaks",
+        "violet sky",
+        "dark forest"
+      ],
+      "sourceUrl": null
+    },
+    {
+      "id": "2943738",
+      "type": "plain",
+      "src": "/designs/plain/2943738.jpg",
+      "title": "Discover the world turquesa",
+      "keywords": [
+        "teal",
+        "pink clouds",
+        "bold headline",
+        "navy"
+      ],
+      "sourceUrl": null
+    },
+    {
+      "id": "4226196",
+      "type": "plain",
+      "src": "/designs/plain/4226196.jpg",
+      "title": "Eco tourism con niebla",
+      "keywords": [
+        "eco tourism",
+        "fog",
+        "birds",
+        "muted palette",
+        "carousel dots"
+      ],
+      "sourceUrl": null
+    },
+    {
+      "id": "5625ebe474",
+      "type": "dark_halftone_dossier",
+      "src": "/designs/dark_halftone_dossier/5625ebe474-0.jpg",
+      "shots": [
+        "/designs/dark_halftone_dossier/5625ebe474-0.jpg",
+        "/designs/dark_halftone_dossier/5625ebe474-1.jpg",
+        "/designs/dark_halftone_dossier/5625ebe474-2.jpg",
+        "/designs/dark_halftone_dossier/5625ebe474-3.jpg"
+      ],
+      "title": "Ryoku: dosier oscuro con estatuas en semitono",
+      "keywords": [
+        "marble bust",
+        "kanji watermark",
+        "countdown",
+        "spec table",
+        "barcode label",
+        "desktop screenshots gallery"
+      ],
+      "sourceUrl": "https://ryoku.dev/"
+    }
+  ]
+}
