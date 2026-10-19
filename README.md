@@ -4,7 +4,8 @@ Biblioteca personal de referencias de diseño, agrupadas por estilo visual. Cada
 
 Para añadir referencias, suelta una imagen o pega una URL. Claude la analiza, la clasifica en un estilo existente (o crea uno nuevo) y escribe sus datos.
 
-![Galería](docs/galeria.png)
+<img src="screenshots/overview.gif" alt="Recorrido por la app" width="100%">
+
 
 ## Qué hace
 
@@ -13,9 +14,9 @@ Para añadir referencias, suelta una imagen o pega una URL. Claude la analiza, l
 - **Filtros.** Por estilo, por texto (sin distinguir tildes) y por keyword (haz clic en una keyword del detalle). El filtro se guarda en la URL.
 - **Añadir diseños con Claude.** Puedes soltar una imagen, pegar la URL de una imagen o pegar la URL de una web. Las webs se capturan con un navegador sin interfaz: hasta 4 pantallas, quitando los banners de cookies.
 
-![Detalle de una referencia](docs/detalle.png)
+![Detalle de una referencia](screenshots/05-detalle.png)
 
-![Añadir un diseño](docs/anadir.png)
+![Añadir un diseño](screenshots/06-anadir.png)
 
 ## Qué usa
 
